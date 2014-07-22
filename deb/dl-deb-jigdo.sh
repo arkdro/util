@@ -5,7 +5,7 @@ dist=${1:-"$default_dist"}
 
 for a in *.jigdo
 do
-	echo jigdo-lite --noask --scan "$dist" $a
+	jigdo-lite --noask --scan "$dist" $a
 done
 
 for a in *.jigdo

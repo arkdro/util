@@ -1,0 +1,5 @@
+# add removable drive:
+echo "- - -" > /sys/class/scsi_host/hostX/scan
+
+# remove removable drive:
+echo 1 > /sys/block/sdb/device/delete

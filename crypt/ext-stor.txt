@@ -1,0 +1,19 @@
+# add removable drive:
+echo "- - -" > /sys/class/scsi_host/hostX/scan
+
+mdadm -A /dev/md1 /dev/sdb3
+mdadm -w /dev/md1 # make it rw
+
+cryptsetup luksOpen /dev/md1 md1_crypt
+vgchange -a y grc1
+lvchange -a y /dev/grc1/v1
+mount /dev/grc1/v1 /mnt
+
+umount /mnt
+lvchange -a n /dev/grc1/v1
+vgchange -a n grc1
+cryptsetup luksClose md1_crypt
+
+mdadm -S /dev/md1
+# remove removable drive:
+echo 1 > /sys/block/sdb/device/delete

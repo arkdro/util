@@ -1,0 +1,7 @@
+set ignorecase
+syntax on
+map <F2> :w!<Enter>
+imap <F2> <Esc>:w!<Enter>a
+set background=dark
+"hi Normal guifg=yellow guibg=darkBlue ctermfg=yellow ctermbg=darkBlue
+hi Comment guifg=darkgreen ctermfg=darkgreen

@@ -1,0 +1,6 @@
+#!/bin/sh
+
+iptables -I OUTPUT -o lo -m owner --uid-owner 1005 -j ACCEPT
+iptables -I OUTPUT -o tun+ -m owner --uid-owner 1005 -j ACCEPT
+iptables -I OUTPUT -m owner --uid-owner 1005 -j REJECT
+

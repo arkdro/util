@@ -1,0 +1,11 @@
+{application, trace,
+ [
+  {description, "Auxillary trace module"},
+  {vsn, "0.0.1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {env, []}
+ ]}.

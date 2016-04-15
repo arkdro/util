@@ -49,10 +49,11 @@ suffix() ->
 
 prepare_file() ->
     Dir = dir(),
-    filelib:ensure_dir(Dir),
     Time = get_time(),
     File = lists:flatten(io_lib:format("~s~w", [base(), Time])),
-    filename:join(Dir, File).
+    Fullname = filename:join(Dir, File),
+    filelib:ensure_dir(Fullname),
+    Fullname.
 
 get_time() ->
     {MS, S, _} = os:timestamp(),

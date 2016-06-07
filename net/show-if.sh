@@ -10,7 +10,7 @@ check_iface(){
 	if [ -e /sys/devices/virtual/net/$i ]
 	then
 		check_addr $i
-		echo W
+		echo $sign
 	else
 		echo -
 	fi
@@ -18,4 +18,5 @@ check_iface(){
 
 IP=/sbin/ip
 iface="${1:-tun0}"
+sign="${2:-W}"
 check_iface $iface

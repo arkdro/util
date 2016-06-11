@@ -20,7 +20,7 @@ cmp_file(){
 	return 0
 }
 
-files=`find -maxdepth 1 -type f -name "*.iso"`
+files=`find -maxdepth 1 \( -type f -o -type l \) -name "*.iso"`
 for a in $files
 do
 	bn=`basename $a`

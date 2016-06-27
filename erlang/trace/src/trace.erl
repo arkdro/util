@@ -50,7 +50,7 @@ suffix() ->
 prepare_file() ->
     Dir = dir(),
     Time = get_time(),
-    File = lists:flatten(io_lib:format("~s~w", [base(), Time])),
+    File = lists:flatten(io_lib:format("~s~w-", [base(), Time])),
     Fullname = filename:join(Dir, File),
     filelib:ensure_dir(Fullname),
     Fullname.

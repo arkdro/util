@@ -1,6 +1,8 @@
 -module(trace).
 
 -export([
+         start_mix/1,
+         start_mix/3,
          start/1,
          start/2,
          start/3,
@@ -28,6 +30,20 @@ start(Modules, Match, Opts, Processes) ->
     dbg:tracer(port, Port),
     dbg:p(Processes, Opts),
     [dbg:tpl(Module, Match) || Module <- Modules].
+
+start_mix(Patterns) ->
+    Processes = all,
+    Opts = [c, timestamp],
+    start_mix(Patterns, Opts, Processes).
+
+start_mix(Patterns, Opts, Processes) ->
+    File = prepare_file(),
+    Suffix = suffix(),
+    Size = 200000000,
+    Port = dbg:trace_port(file, {File, wrap, Suffix, Size}),
+    dbg:tracer(port, Port),
+    dbg:p(Processes, Opts),
+    [dbg:tpl(Module, Match) || {Module, Match} <- Patterns].
 
 stop() ->
     dbg:ctpl(),

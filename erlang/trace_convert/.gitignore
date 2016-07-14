@@ -1,0 +1,9 @@
+.rebar/
+/logs
+/deps
+/.eunit
+ebin
+*.beam
+*#
+*~
+*.sw?

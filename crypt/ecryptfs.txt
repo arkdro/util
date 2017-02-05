@@ -1,0 +1,13 @@
+simple:
+  # mount -t ecryptfs .d01 d01
+
+complex:
+  # ecryptfs-add-passphrase --fnek
+  Passphrase:
+  Inserted auth tok with sig [13e8b1bc6090e91d] into the user session keyring
+  Inserted auth tok with sig [3208187a52bf0f9c] into the user session keyring
+
+  then use on of the sigs (don't know which one) for mount. Without the sigs
+  in parameters it will ask.
+
+  # mount -t ecryptfs .d01 d01 -o key=passphrase,ecryptfs_cipher=aes,ecryptfs_key_bytes=16,ecryptfs_hmac,ecryptfs_passthrough=no,ecryptfs_enable_filename_crypto=y,ecryptfs_fnek_sig=13e8b1bc6090e91d,ecryptfs_sig=13e8b1bc6090e91d

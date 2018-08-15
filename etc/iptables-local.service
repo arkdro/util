@@ -1,0 +1,12 @@
+[Unit]
+Description=IP-Tables local rules
+After=multi-user.target openvpn.service
+
+[Service]
+ExecStart=/usr/local/bin/iptables-local.sh start
+ExecReload=/usr/local/bin/iptables-local.sh restart
+ExecStop=/usr/local/bin/iptables-local.sh stop
+RemainAfterExit=true
+
+[Install]
+WantedBy=multi-user.target

@@ -10,6 +10,9 @@ do_user_1() {
 	iptables $op OUTPUT -m owner --uid-owner $uid -j REJECT
 	iptables $op OUTPUT -o tun+ -m owner --uid-owner $uid -j ACCEPT
 	iptables $op OUTPUT -o lo -m owner --uid-owner $uid -j ACCEPT
+	# DNS
+	dns_server="192.168.1.1"
+	iptables $op OUTPUT -m owner --uid-owner $uid -d "$dns_server" -p udp --dport 53 -j ACCEPT
 }
 
 # only local network

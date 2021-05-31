@@ -34,4 +34,4 @@ set ignorecase
 syntax on
 filetype plugin indent on
 hi normal guibg=grey5
-hi Comment guifg=darkgreen ctermfg=darkgreen
+hi Comment guifg=darkcyan ctermfg=darkcyan

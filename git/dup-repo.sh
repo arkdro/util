@@ -21,7 +21,7 @@ n=`git config --get user.name`
 find "$temp_dir" -type f |\
 	while read f
 		do
-			sed -i -e "s/^From: root <root@localhost>/From: $n <$e>/" "$f"
+			sed -i -e "s/^From: user <user@localhost>/From: $n <$e>/" "$f"
 		done
 
 mkdir -p "$target_dir"

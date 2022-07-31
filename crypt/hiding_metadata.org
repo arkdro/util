@@ -1,0 +1,44 @@
+#+TITLE: On hiding metadata - manually reproduce CryFS
+
+* Prepare the external layer
+
+- setup gocryptfs (it needs -allow_other for losetup)
+- fuse would needs -allow_root/-allow_other, which would need
+  /etc/fuse.conf modification
+- create a 5GB file on gocryptfs
+
+* Prepare the internal layer
+
+- setup losetup using that 5GB file
+- make a loop device
+- setup LUKS on the loop device
+- make a filesystem on the LUKS device
+- change reserved block count to 0: tune2fs -r 0 xxxxxxxx
+- mount the filesystem to a working directory
+- make sure a user have permissions to work with the working directory
+
+* Work with data
+
+- store the payload (e.g. a bunch of big files) in the working directory
+
+* Finish the internal layer
+
+- unmount the filesystem
+- close the LUKS device
+- detach the loop device
+
+* Finish the external layer
+
+- unmount the 5GB file
+
+* Upload
+
+- upload the gocryptfs encrypted directory to whatever place you want
+
+* Notes
+
+- losetup with a backing file on a go-fuse: can produce a lot of weird
+  log messages on writing. Although they seem harmless.
+- use 'noatime' for go-fuse
+- use 'noatime' for loopback mounted devices
+

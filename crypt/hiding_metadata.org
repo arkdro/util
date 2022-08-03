@@ -10,11 +10,13 @@
 * Prepare the internal layer
 
 - setup losetup using that 5GB file
-- make a loop device
-- setup LUKS on the loop device
+  losetup --find --show file.dat
+- setup LUKS on the loop device from the previous step
+  cryptsetup luksFormat --pbkdf-memory 4194304 --iter-time 8000 /dev/loopXXX
 - make a filesystem on the LUKS device
-- change reserved block count to 0: tune2fs -r 0 xxxxxxxx
-- mount the filesystem to a working directory
+- change reserved block count to 0
+  tune2fs -r 0 xxxxxxxx
+- mount the LUKS device to a working directory
 - make sure a user have permissions to work with the working directory
 
 * Work with data
@@ -23,7 +25,7 @@
 
 * Finish the internal layer
 
-- unmount the filesystem
+- unmount the LUKS device from the working directory
 - close the LUKS device
 - detach the loop device
 
@@ -37,7 +39,7 @@
 
 * Notes
 
-- losetup with a backing file on a go-fuse: can produce a lot of weird
+- losetup with a backing file on a go-fuse can produce a lot of weird
   log messages on writing. Although they seem harmless.
 - use 'noatime' for go-fuse
 - use 'noatime' for loopback mounted devices

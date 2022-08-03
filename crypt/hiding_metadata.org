@@ -27,7 +27,9 @@
 
 - unmount the LUKS device from the working directory
 - close the LUKS device
+  cryptsetup luksClose loopXXX_encrypted
 - detach the loop device
+  losetup --detach /dev/loopXXX
 
 * Finish the external layer
 

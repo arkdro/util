@@ -1,0 +1,45 @@
+#+TITLE: Fscrypt
+
+* issues
+
+** common
+
+- currently backup/restore of encrypted files/dirs is impossible
+
+** specific version related
+
+*** 0.2.9-1+b6
+
+- changing a password (user calls 'passwd') makes protector's permissions to 644
+  ignoring umask.
+  Fixed in 0.3.3
+
+* doc
+
+https://github.com/google/fscrypt
+
+* system wide preparation
+
+** to allow users to change keys
+
+- change permissions for policy and protector dirs (see /.fscrypt/*) to 01777
+  (rwx for all, with sticky bit set)
+- Optional:
+  set the owner of a user policy and a user protector (/.fscrypt/policies/xxxx,
+  /.fscrypt/protectors/xxxx) to the user
+
+** to disallow users to change keys
+
+- change permissions for policy and protector dirs (see /.fscrypt/*) to 0700
+  (rwx for root only)
+- change the ownership for policy and protector dirs to root
+
+* home dir preparation
+
+- create a user with a home dir
+- create a new dir for the user. E.g. 'user.new'
+- set owner of the new dir to the user
+- user creates a protector for the new dir
+- user moves everything from the old home dir to the new dir
+- user renames the new dir to the home dir
+

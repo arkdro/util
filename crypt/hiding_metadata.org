@@ -9,15 +9,27 @@
 
 * Prepare the internal layer
 
-- setup losetup using that 5GB file
-  losetup --find --show file.dat
-- setup LUKS on the loop device from the previous step
-  cryptsetup luksFormat --pbkdf-memory 4194304 --iter-time 8000 /dev/loopXXX
-- make a filesystem on the LUKS device
-- change reserved block count to 0
-  tune2fs -r 0 xxxxxxxx
-- mount the LUKS device to a working directory
-- make sure a user have permissions to work with the working directory
+1.1. setup losetup using that 5GB file
+   losetup --find --show file.dat
+1.2. setup LUKS on the loop device from the previous step
+   cryptsetup luksFormat --pbkdf-memory 4194304 --iter-time 8000 /dev/loopXXX
+or
+1. setup LUKS on that 5GB file directly
+   cryptsetup luksFormat --pbkdf-memory 4194304 --iter-time 8000 file.dat
+   NOTE:
+   running this command as a user can result in "Not compatible PBKDF options" message.
+   This is because the user has lower memory limits that root.
+   Workarounds:
+   1. run the command as root
+   2. use lower memory, say 2x less: 2097152
+
+2. open the LUKS device
+   cryptsetup luksOpen file.dat file_dat_mapped_encrypted
+3. make a filesystem on the LUKS device
+4. change reserved block count to 0
+   tune2fs -r 0 xxxxxxxx
+5. mount the LUKS device to a working directory
+6. make sure a user have permissions to work with the working directory
 
 * Work with data
 

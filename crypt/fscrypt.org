@@ -22,6 +22,9 @@ https://github.com/google/fscrypt
 
 ** to allow users to change keys
 
+- enable fscrypt for the filesystem
+  - tune2fs -O encrypt /dev/sda234
+  - fscrypt setup
 - change permissions for policy and protector dirs (see /.fscrypt/*) to 01777
   (rwx for all, with sticky bit set)
 - Optional:
@@ -40,6 +43,7 @@ https://github.com/google/fscrypt
 - create a new dir for the user. E.g. 'user.new'
 - set owner of the new dir to the user
 - user creates a protector for the new dir
+  - fscrypt encrypt /home/user.new
 - user moves everything from the old home dir to the new dir
 - user renames the new dir to the home dir
 

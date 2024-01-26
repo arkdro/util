@@ -1,0 +1,51 @@
+#!/bin/bash
+
+set -euo pipefail
+IFS=$'\n\t'
+
+renice -n 18 -p $$
+ionice -c 3 -p $$
+
+
+prepare_audio() {
+	browser_dir="$dir/tor-browser${locale_suffix}/Browser"
+	pulse_config_dir="$browser_dir/.config/pulse"
+	local_config_dir="$HOME/.config/pulse"
+	mkdir -p "$pulse_config_dir"
+	cp "$local_config_dir/cookie" "$pulse_config_dir"
+	cp "$local_config_dir/client.conf" "$pulse_config_dir"
+}
+
+
+# cd "$HOME/.local/share/torbrowser/tor-browser_en-US"
+# ./start-tor-browser.desktop
+
+version="13.0.6"
+locale_suffix=""
+
+work_dir="$HOME"
+home_dir="$HOME"
+base="${TMP:-$work_dir/tmp}"
+tmpdir="${base}/i"
+mkdir -p "$tmpdir"
+dir=`mktemp -d --tmpdir="$tmpdir" "tbb.XXXXXXXXXX"`
+echo "dir: $dir"
+
+basefile="tor-browser-linux-x86_64-${version}${locale_suffix}.tar.xz"
+file="${home_dir}/util/web/${basefile}"
+sig="${file}.asc"
+
+home_page="file://${home_dir}/links/l.html"
+home_page_pref="user_pref(\"browser.startup.homepage\", \"$home_page\");"
+profile_file="$dir/tor-browser${locale_suffix}/Browser/TorBrowser/Data/Browser/profile.default/prefs.js"
+
+gpg --verify "$sig" "$file"
+mkdir -p "$dir"
+tar xJf "$file" -C "$dir" --strip-components=0
+echo "$home_page_pref" >> "$profile_file"
+prepare_audio
+ulimit -n 3000
+cd "$dir/tor-browser${locale_suffix}"
+./Browser/start-tor-browser ~/links/l.html
+
+rm -rf -- "$dir"

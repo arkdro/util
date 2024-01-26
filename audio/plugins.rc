@@ -1,0 +1,6 @@
+
+filter='-el:lowpass_iir,8500,5'
+compressor='-el:sc4,0.5,50,120,-30,20,3.25,0'
+limiter='-el:fastLookaheadLimiter,20,-3,0.12'
+
+# Parameters=Attack_time_(ms)="5.000000000000" Knee_radius_(dB)="3.250000000000" Makeup_gain_(dB)="0.000000000000" Ratio_(1_n)="20.000000000000" Release_time_(ms)="120.000000000000" RMS_peak="0.500000000000" Threshold_level_(dB)="-12.000000000000"

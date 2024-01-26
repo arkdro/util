@@ -45,7 +45,7 @@ or
 
 * Finish the external layer
 
-- unmount the 5GB file
+- unmount the gocryptfs directory with the 5GB file
 
 * Upload
 

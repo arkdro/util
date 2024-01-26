@@ -1,5 +1,10 @@
 #+TITLE: Fscrypt
 
+* links
+
+- https://github.com/google/fscrypt
+- https://wiki.archlinux.org/title/Fscrypt
+
 * issues
 
 ** common

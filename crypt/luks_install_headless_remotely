@@ -1,0 +1,132 @@
+https://github.com/philpagel/debian-headless
+
+https://wiki.debian.org/DebianInstaller/Preseed
+https://wiki.debian.org/ManipulatingISOs#remaster
+https://wiki.debian.org/DebianInstaller/Preseed/EditIso
+
+https://wiki.debian.org/RepackBootableISO
+
+https://serverfault.com/questions/1077958/preseeding-debian-11-fully-unattended-get-rid-of-questions
+https://superuser.com/questions/1730951/debian-11-preseed-with-luks-and-lvm
+
+---------------------------------------------------------------------
+about 'philpagel/debian-headless':
+- to start installer without serial console: remove 'console' from kernel parameters
+  otherwise it would loop infinitely spawned by initd, waiting for ttyS0 and terminating
+---------------------------------------------------------------------
+unpack iso
+put preseed.cfg to extracted root
+modify isolinux/txt.cfg
+generate iso (either by using existing script or using modified one: gen_iso.sh)
+---------------------------------------------------------------------
+use https://github.com/philpagel/debian-headless
+commit 94b08dbdd293 - Bump to 12.5.0
+
+with additions:
+
+diff --git a/preseed.cfg b/preseed.cfg
+index 718e313..1812220 100644
+--- a/preseed.cfg
++++ b/preseed.cfg
+@@ -39,12 +39,28 @@ d-i netcfg/get_domain string local
+ d-i hw-detect/load_firmware boolean true
+ 
+ # Setup network console
+-d-i preseed/early_command string anna-install network-console
++d-i preseed/early_command string anna-install network-console; \
++mkdir -p /.ssh; \
++/bin/sh -c "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWuT1eLjs5iSAvaGl3+w4m8Jp1y27vyHSSMElwmKCpx foobar' >> /.ssh/authorized_keys"; \
++chown -R root:root /.ssh/; \
++chmod 600 /.ssh/authorized_keys; \
++chmod 700 /.ssh/
++
+ d-i network-console/start select continue
+ # Login with password:
+-d-i network-console/password password r00tme
+-d-i network-console/password-again password r00tme
++#d-i network-console/password password r00tme
++#d-i network-console/password-again password r00tme
++
+ # Login with ssh key:
+ # d-i network-console/authorized_keys_url string https://my.server/authorized_key
+ # disable login with password:
+ # d-i network-console/password-disabled boolean true
++
++d-i passwd/root-password-crypted password $y$j9T$xoIVLHD2G8Af5r0/8umOX.$mH6p/xiC6dTI7U0HO3ktPmuVheCdfKU.kMcVlrY3bq3
++
++d-i preseed/late_command string in-target mkdir -p /root/.ssh; \
++in-target /bin/sh -c "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWuT1eLjs5iSAvaGl3+w4m8Jp1y27vyHSSMElwmKCpx foobar' >> /root/.ssh/authorized_keys"; \
++in-target chown -R root:root /root/.ssh/; \
++in-target chmod 600 /root/.ssh/authorized_keys; \
++in-target chmod 700 /root/.ssh/
++
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+before finishing installation, switch to other console, then install and configure dropbear:
+
+copy deb packages to the target (or copy them into the installation media in advance):
+dropbear-initramfs, dropbear-bin
+
+mount -o bind /sys /target/sys
+mount -o bind /dev /target/dev
+mount -o bind /proc /target/proc
+chroot /target
+
+dpkg -i xxxxxxx
+  or (if the installation media contains it)
+apt-get install dropbear-initramfs
+
+add your key to /etc/dropbear/initramfs/authorized_keys
+configure dropbear in /etc/dropbear/initramfs/dropbear.conf
+  DROPBEAR_OPTIONS="-I 300 -j -k -p 6322 -s -c cryptroot-unlock"
+configure network if necessary: /etc/initramfs-tools/initramfs.conf
+generate initramfs: update-initramfs -u
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+or use p2.diff:
+
+diff --git a/preseed.cfg b/preseed.cfg
+index 718e313..76761b4 100644
+--- a/preseed.cfg
++++ b/preseed.cfg
+@@ -39,12 +39,38 @@ d-i netcfg/get_domain string local
+ d-i hw-detect/load_firmware boolean true
+ 
+ # Setup network console
+-d-i preseed/early_command string anna-install network-console
++d-i preseed/early_command string anna-install network-console; \
++mkdir -p /.ssh; \
++/bin/sh -c "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWuT1eLjs5iSAvaGl3+w4m8Jp1y27vyHSSMElwmKCpx foobar' >> /.ssh/authorized_keys"; \
++chown -R root:root /.ssh/; \
++chmod 600 /.ssh/authorized_keys; \
++chmod 700 /.ssh/
++
+ d-i network-console/start select continue
+ # Login with password:
+-d-i network-console/password password r00tme
+-d-i network-console/password-again password r00tme
++#d-i network-console/password password r00tme
++#d-i network-console/password-again password r00tme
++
+ # Login with ssh key:
+ # d-i network-console/authorized_keys_url string https://my.server/authorized_key
+ # disable login with password:
+ # d-i network-console/password-disabled boolean true
++
++d-i passwd/root-password-crypted password $y$j9T$xoIVLHD2G8Af5r0/8umOX.$mH6p/xiC6dTI7U0HO3ktPmuVheCdfKU.kMcVlrY3bq3
++
++# it expects dropbear to be in /cdrom/extra/
++
++d-i preseed/late_command string in-target mkdir -p /root/.ssh; \
++in-target /bin/sh -c "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWuT1eLjs5iSAvaGl3+w4m8Jp1y27vyHSSMElwmKCpx foobar' >> /root/.ssh/authorized_keys"; \
++in-target chown -R root:root /root/.ssh/; \
++in-target chmod 600 /root/.ssh/authorized_keys; \
++in-target chmod 700 /root/.ssh/; \
++in-target apt-get -y install libcrypt1 libtomcrypt1 libtommath1 zlib1g; \
++cp /cdrom/extra/dropbear* /target/tmp; \
++in-target dpkg -i /tmp/dropbear-bin_2022.83-1+deb12u1_amd64.deb; \
++in-target dpkg -i /tmp/dropbear-initramfs_2022.83-1+deb12u1_all.deb; \
++in-target /bin/sh -c "echo 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINWuT1eLjs5iSAvaGl3+w4m8Jp1y27vyHSSMElwmKCpx foobar' >> /etc/dropbear/initramfs/authorized_keys"; \
++in-target /bin/sh -c "echo 'DROPBEAR_OPTIONS=\"-I 300 -j -k -p 6322 -s -c cryptroot-unlock\" ' >> /etc/dropbear/initramfs/dropbear.conf"; \
++in-target update-initramfs -u
++
++
+---------------------------------------------------------------------

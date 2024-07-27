@@ -1,0 +1,24 @@
+#+TITLE: LUKS full disk encryption key asked via ssh on boot
+
+* net boot
+
+https://www.privex.io/articles/unlock-luks-remotely-ssh-dropbear/
+https://www.cyberciti.biz/security/how-to-unlock-luks-using-dropbear-ssh-keys-remotely-in-linux/
+https://askubuntu.com/questions/1269981/unattended-headless-ubuntu-server-with-disk-encryption-how-to-set-it-up
+https://blog.gradiian.io/migrating-to-cockpit-part-i/
+/usr/share/doc/dropbear-initramfs/README.initramfs
+
+- install dropbear-initramfs
+- add your key to /etc/dropbear/initramfs/authorized_keys
+- configure dropbear in /etc/dropbear/initramfs/dropbear.conf
+  DROPBEAR_OPTIONS="-I 300 -j -k -p 5322 -s -c cryptroot-unlock"
+- configure network if necessary: /etc/initramfs-tools/initramfs.conf
+  # IP_ADDRESS::GATEWAY:NETMASK:HOSTNAME
+  IP=10.0.0.5::10.0.0.1:255.255.255.0:myserver
+  or with interface name
+  IP=10.0.0.5::10.0.0.1:255.255.255.0:myserver:enp2s0
+
+- generate initramfs: update-initramfs -u
+
+note: possible to use tinyssh or dropbear
+

@@ -3,9 +3,10 @@
 * Prepare the external layer
 
 - setup gocryptfs (it needs -allow_other for losetup)
-- fuse would needs -allow_root/-allow_other, which would need
+- fuse would need -allow_root/-allow_other, which would need
   /etc/fuse.conf modification
-- create a 5GB file on gocryptfs
+- create a 5GB file on gocryptfs.
+  You can create multiple such files. Every file requires the internal layer preparation.
 
 * Prepare the internal layer
 
@@ -25,15 +26,15 @@ or
 
 2. open the LUKS device
    cryptsetup luksOpen file.dat file_dat_mapped_encrypted
-3. make a filesystem on the LUKS device
+3. make a filesystem on that mapped LUKS device (file_dat_mapped_encrypted)
 4. change reserved block count to 0
-   tune2fs -r 0 xxxxxxxx
+   tune2fs -r 0 /dev/mapper/file_dat_mapped_encrypted
 5. mount the LUKS device to a working directory
 6. make sure a user have permissions to work with the working directory
 
 * Work with data
 
-- store the payload (e.g. a bunch of big files) in the working directory
+- store the payload (e.g. a bunch of files) in the working directory
 
 * Finish the internal layer
 

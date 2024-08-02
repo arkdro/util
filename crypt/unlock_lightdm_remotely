@@ -1,0 +1,65 @@
+# -*- mode:org -*-
+#+TITLE: Remotely unlock LightDM
+
+* Remotely unlock LightDM
+
+** Using vnc
+
+*** x11vnc
+
+https://askubuntu.com/questions/229989/how-to-setup-x11vnc-to-access-with-graphical-login-screen/
+https://unix.stackexchange.com/questions/644886/vnc-server-with-gdm-login
+
+search: Remote Graphical Login: Using Xvnc and gdm for One-Shot sessions
+
+Need to bind x11vnc to screen instead of session
+
+Starting as a systemd service:
+- x11vnc gives access to the login (greeter) screen of lightdm. A user is able to login.
+- it's a one-time run. After a detach, x11vnc exits normally and does not restart.
+  Tweak the service file if needed.
+
+** use passwd
+
+*** initial setup / after DM restart
+
+1. during OS install: set pw1 (complex. Temporary. Only needed if using encrypted home)
+   or disable pw completely for user1
+2. login as other user: user2
+3. disable login as user1 for any other way except local console
+4. switch to user1
+5. change pw from pw1 to pw2 (simple one)
+6. login as user1 on local console
+7. change pw from pw2 to pw3 (complex)
+8. enable login as user1 for other ways
+
+*** during work
+
+1. login as other user: user2
+2. switch to user1
+3. terminate locker
+4. switch from the locker screen to the local console
+5. start locker
+
+* Remotely start X session
+
+** Using X
+
+1. as root:
+  X -nolisten tcp :1
+  where ':1' is a first unoccupied displaynumber
+2. as a user:
+  DISPLAY=:1 xfce4-session
+
+There are a lot of complaints:
+
+xfwm4:2016): xfwm4-WARNING **: Unsupported GL renderer
+xfsettingsd:2029): xfsettingsd-CRITICAL **: Failed to apply display settings
+polkit-gnome-authentication-agent-1:2053): polkit-gnome-1-WARNING **: Unable to determine the session we are in: No session for pid 2053
+pa_context_connect() failed: Connection refused
+light-locker:2067): ERROR **: session_id is not set
+Xlib:  extension "DPMS" missing on display ":1.0
+xfce4-power-manager:2064): xfce4-power-manager-WARNING **: Monitor is not DPMS capable
+
+After 'logout': bunch of processes are still in memory.
+

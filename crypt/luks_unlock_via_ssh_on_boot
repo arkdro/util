@@ -1,3 +1,4 @@
+# -*- mode:org -*-
 #+TITLE: LUKS full disk encryption key asked via ssh on boot
 
 * net boot

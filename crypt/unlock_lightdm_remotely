@@ -19,6 +19,22 @@ Starting as a systemd service:
 - it's a one-time run. After a detach, x11vnc exits normally and does not restart.
   Tweak the service file if needed.
 
+#+NAME: x11vnc systemd service
+#+BEGIN_SRC config
+# vnc-lightdm.service
+[Unit]
+Description=VNC Server (lightdm)
+After=graphical.target
+
+[Service]
+ExecStart=bash -c 'x11vnc -auth /run/lightdm/root/:0 -display :0 -nopw'
+Restart=on-failure
+RestartSec=3
+
+[Install]
+WantedBy=graphical.target
+#+END_SRC
+
 ** use passwd
 
 *** initial setup / after DM restart

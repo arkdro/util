@@ -5,9 +5,20 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-base="${HOME}/tmp"
+renice -n 18 -p $$
+ionice -c 3 -p $$
+
+base="${TMP:-$HOME/tmp}"
 tmpdir="${base}/i"
-dir=`mktemp -d --tmpdir="$tmpdir" "tmp.XXXXXXXXXX"`
+mkdir -p "$tmpdir"
+new_tmp=`mktemp -d --tmpdir="$tmpdir" "tmp.XXXXXXXXXX"`
+
+export TMP=$new_tmp
+export TEMP=$TMP
+export TMPDIR=$TMP
+export TEMPDIR=$TMP
+
+dir=`mktemp -d --tmpdir="$new_tmp" "bf.XXXXXXXXXX"`
 echo "dir: $dir"
 
 mkdir -p "$dir" && \
@@ -17,4 +28,4 @@ firefox \
 	--profile "$dir" \
 	~/links/l.html
 
-rm -rf -- "$dir"
+rm -rf -- "$new_tmp"

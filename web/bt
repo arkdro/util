@@ -1,12 +1,5 @@
 #!/bin/bash
 
-set -euo pipefail
-IFS=$'\n\t'
-
-renice -n 18 -p $$
-ionice -c 3 -p $$
-
-
 prepare_audio() {
 	browser_dir="$dir/tor-browser${locale_suffix}/Browser"
 	pulse_config_dir="$browser_dir/.config/pulse"
@@ -16,6 +9,11 @@ prepare_audio() {
 	cp "$local_config_dir/client.conf" "$pulse_config_dir"
 }
 
+set -euo pipefail
+IFS=$'\n\t'
+
+renice -n 18 -p $$
+ionice -c 3 -p $$
 
 # cd "$HOME/.local/share/torbrowser/tor-browser_en-US"
 # ./start-tor-browser.desktop
@@ -28,7 +26,14 @@ home_dir="$HOME"
 base="${TMP:-$work_dir/tmp}"
 tmpdir="${base}/i"
 mkdir -p "$tmpdir"
-dir=`mktemp -d --tmpdir="$tmpdir" "tbb.XXXXXXXXXX"`
+new_tmp=`mktemp -d --tmpdir="$tmpdir" "tmp_bt.XXXXXXXXXX"`
+
+export TMP=$new_tmp
+export TEMP=$TMP
+export TMPDIR=$TMP
+export TEMPDIR=$TMP
+
+dir=`mktemp -d --tmpdir="$new_tmp" "bt.XXXXXXXXXX"`
 echo "dir: $dir"
 
 basefile="tor-browser-linux-x86_64-${version}${locale_suffix}.tar.xz"
@@ -48,4 +53,4 @@ ulimit -n 3000
 cd "$dir/tor-browser${locale_suffix}"
 ./Browser/start-tor-browser ~/links/l.html
 
-rm -rf -- "$dir"
+rm -rf -- "$new_tmp"

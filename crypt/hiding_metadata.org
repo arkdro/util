@@ -5,6 +5,8 @@
 - setup gocryptfs (it needs -allow_other for losetup)
 - fuse would need -allow_root/-allow_other, which would need
   /etc/fuse.conf modification
+- mount gocryptfs (it needs -allow_root/-allow_other for cryptsetup later)
+  gocryptfs -ko allow_other -q DIR_1 DIR_2
 - create a 5GB file on gocryptfs.
   You can create multiple such files. Every file requires the internal layer preparation.
 

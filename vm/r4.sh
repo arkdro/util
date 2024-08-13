@@ -4,7 +4,8 @@
 # doc:
 #   https://wiki.qemu.org/Documentation/9psetup
 # fstab:
-#   deb_dist /usr/local/home/xxxxxxxx 9p trans=virtio,version=9p2000.L,msize=512000 0 0
+#   deb_dist /usr/local/home/xxxxxxxx 9p trans=virtio,version=9p2000.L,msize=104857600 0 0
+#   there is a hardcoded limit somewhere: msize=512000
 # manual mount:
 #   mount -t 9p -o trans=virtio deb_dist /usr/local/home/xxxxxxxxx -oversion=9p2000.L
 

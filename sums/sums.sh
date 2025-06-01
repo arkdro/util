@@ -4,7 +4,7 @@ one_hash() {
 	local hash="$1"
 	local file="$2"
 	openssl dgst "-${hash}" "$file" |\
-		awk -v in_file="$file" -v in_hash="$hash" "{printf(\"%s:%s:%s\n\", in_file, in_hash, \$2)}"
+		awk -v in_file="$file" -v in_hash="$hash" "{printf(\"%s:%s:%s\n\", in_file, in_hash, \$NF)}"
 }
 
 one_file() {
@@ -24,7 +24,7 @@ one_file() {
 	EOF
 }
 
-find "$@" -type f |\
+find "$@" \( -type f -o -type l \) |\
 	while read f
 	do
 		one_file "$f"

@@ -6,6 +6,8 @@ xmodmap -e 'keycode 94 = Shift_L'
 
 # Muhenkan on JIS keyboard
 xmodmap -e 'keycode 102 = Alt_L'
+# Henkan on JIS keyboard
+xmodmap -e 'keycode 100 = Alt_R'
 
 # '\' on JIS keyboard. Make it '/'
 xmodmap -e 'keycode 97 = slash question'

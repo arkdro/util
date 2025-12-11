@@ -6,6 +6,9 @@ mem=1792m
 #gr=-nographic
 
 net="-net nic -net user,hostfwd=tcp:127.0.0.1:2022-:22"
+
+# forward several ports:
+# net="-net nic -net user,hostfwd=tcp:127.0.0.1:${base_port}22-:22,hostfwd=tcp:127.0.0.1:${boot_port}22-:${boot_port}22,hostfwd=tcp:127.0.0.1:${installer_port}22-:22"
 serial="-serial tcp:127.0.0.1:2023,server,nowait"
 
 qemu \

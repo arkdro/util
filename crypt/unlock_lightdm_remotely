@@ -14,6 +14,20 @@ search: Remote Graphical Login: Using Xvnc and gdm for One-Shot sessions
 
 Need to bind x11vnc to screen instead of session
 
+Starting manually (see README):
+
+- create vnc password on the server
+  might be unnecessary if no other users can connect to port 5900.
+  # might be unnecessary if port 5900 only accepts connections on local interfaces
+
+  x11vnc -storepasswd my_password .x11vnc_pw
+  
+- connect:
+  ssh -t -L 5900:localhost:5900 user@host 'x11vnc -localhost -display :0'
+  the cookie file ('/run/lightdm/root/:0' in this case) must be readable
+  by the user which is used for the ssh connection, or connect with 'root@host',
+  or use the systemd running service (see below).
+
 Starting as a systemd service:
 - x11vnc gives access to the login (greeter) screen of lightdm. A user is able to login.
 - it's a one-time run. After a detach, x11vnc exits normally and does not restart.

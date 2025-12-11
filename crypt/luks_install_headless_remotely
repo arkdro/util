@@ -14,10 +14,11 @@ about 'philpagel/debian-headless':
 - to start installer without serial console: remove 'console' from kernel parameters
   otherwise it would loop infinitely spawned by initd, waiting for ttyS0 and terminating
 ---------------------------------------------------------------------
-unpack iso
-put preseed.cfg to extracted root
-modify isolinux/txt.cfg
-generate iso (either by using existing script or using modified one: gen_iso.sh)
+if do this manually:
+- unpack iso
+- put preseed.cfg to extracted root
+- modify isolinux/txt.cfg
+- generate iso (either by using existing script or using modified one: gen_iso.sh)
 ---------------------------------------------------------------------
 use https://github.com/philpagel/debian-headless
 commit 94b08dbdd293 - Bump to 12.5.0
@@ -61,6 +62,32 @@ index 718e313..1812220 100644
 +in-target chmod 700 /root/.ssh/
 +
 - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+- preceed should activate network if no DHCP is available
+  - interface names:
+    - mini: eno1, wlp0s20f3
+    - h1: enp5s0, wlp6s0
+    - h9: enp2s0, wlp3s0, wlx04bad6cb783c
+    One can use a usb network card. Its name will be enx + mac address, which
+    can be obtained in advance, before building an iso image.
+    Example: enx00133bfbb0a7
+    Docs: systemd.net-naming-scheme, consistent_network_device_naming
+    Works during install, but does not activate it after reboot.
+    Note: busybox ip does not implement all ip functionality - it does not understand
+    interface alternative names
+  - when using 'auto' for network interface name (netcfg/choose_interface select auto)
+    it could pick either a wired or wireless interface.
+    Make sure you have a proper routing to that interface's ip:
+    either directly connect wires, or add a specific route for that ip.
+    Note: 'auto' was problematic - all links were down (physical connnection problem?)
+- during the install the installer ssh is listening on port 22
+  - connect: ssh -p 22 root@host
+  - attach to screen: screen -DR -e ^Ff
+  - continue with the install if it's available inside screen.
+    Otherwise, manually run debian-installer
+  - after the install and boot, the ssh is listening on the configured port,
+    6322 in this example
+- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
 before finishing installation, switch to other console, then install and configure dropbear:
 
 copy deb packages to the target (or copy them into the installation media in advance):

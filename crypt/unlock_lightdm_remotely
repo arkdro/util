@@ -49,6 +49,16 @@ RestartSec=3
 WantedBy=graphical.target
 #+END_SRC
 
+*** example connect
+
+on the server:
+  x11vnc -auth /run/lightdm/root/:0 -display :0 -nopw -input KMBCF -localhost
+
+on the client:
+  ssh -t -L 5900:127.0.0.1:5900 -ACX user@192.168.16.1
+  xvncviewer 127.0.0.1::5900
+
+
 ** use passwd
 
 *** initial setup / after DM restart

@@ -1,8 +1,10 @@
 #!/bin/sh
 # rxvt +sb -fg grey85 -bg black -g 80x30 -fn '-rfx-fixed-medium-r-normal--24-170-100-100-c-120-iso10646-1' -fb '-rfx-fixed-medium-r-normal--24-170-100-100-c-120-iso10646-1'
 
-res='URxvt.color4:#205050'
+color='#205050'
+res="URxvt.color4:$color"
 res_param="-xrm ${res}"
+#res_param="-color4 ${color}"
 
 #fn=${1:-"DejaVu Sans Mono"}
 #sz=${2:-40}

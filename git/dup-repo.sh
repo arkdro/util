@@ -10,6 +10,7 @@ fi
 cur_dir=`pwd`
 repo_dir="$1"
 target_dir="$2"
+branch="${3:-master}"
 temp_dir=`mktemp -d -p "$cur_dir"`
 
 cd "$repo_dir" 
@@ -27,6 +28,10 @@ find "$temp_dir" -type f |\
 mkdir -p "$target_dir"
 cd "$target_dir"
 git init
+
+# when using not 'master' branch
+git switch -c "$branch"
+
 find "$temp_dir" -type f | sort |\
 	while read f
 		do
